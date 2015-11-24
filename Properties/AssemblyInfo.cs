@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Sitemp_XML")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Originally by Sitecore, updated by 3chillies")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Sitecore Ukraine")]
+[assembly: AssemblyCompany("3chillies")]
 [assembly: AssemblyProduct("Sitemp_XML")]
-[assembly: AssemblyCopyright("Copyright © Sitecore Ukraine 2009")]
+[assembly: AssemblyCopyright("Copyright © 3chillies 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.5.0.0")]

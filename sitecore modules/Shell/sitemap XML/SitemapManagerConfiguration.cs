@@ -25,23 +25,13 @@ using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Xml;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 
 namespace Sitecore.Modules.SitemapXML
 {
     public class SitemapManagerConfiguration
     {
         #region properties
-
-
-
-        public static string XmlnsTpl
-        {
-            get
-            {
-                return GetValueByName("xmlnsTpl");
-            }
-        }
-
 
 
         public static string WorkingDatabase
@@ -144,6 +134,31 @@ namespace Sitecore.Modules.SitemapXML
                 if (XmlUtil.GetAttribute("name", node) == name)
                 {
                     result = XmlUtil.GetAttribute("serverUrl", node);
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public static List<string> GetLangsBySite(string name)
+        {
+            List<string> result = new List<string>();
+
+            foreach (XmlNode node in Factory.GetConfigNodes("sitemapVariables/sites/site"))
+            {
+
+                if (XmlUtil.GetAttribute("name", node) == name)
+                {
+                    string langs = XmlUtil.GetAttribute("languages", node);
+                    char[] s = { ',', '|' };
+                    string[] resultsArray = langs.Split(s, System.StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (string r in resultsArray)
+                    {
+                        result.Add(r.ToLower());
+                    }
+
                     break;
                 }
             }
