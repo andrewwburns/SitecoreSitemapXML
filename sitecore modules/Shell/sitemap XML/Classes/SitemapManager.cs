@@ -212,8 +212,7 @@ namespace Sitecore.Modules.SitemapXML
 
         private XmlDocument BuildSitemapItem(XmlDocument doc, Item item, Site site, string defaultlang, List<string> desiredLangs)
         {
-
-            string url = HtmlEncode(this.GetItemUrl(item, site, LanguageEmbedding.Always, defaultlang));
+            string url = this.GetItemUrl(item, site, LinkManager.LanguageEmbedding, defaultlang);
 
             DateTime lastMod = item.Statistics.Updated;
             lastMod = (lastMod < item.Statistics.Created) ? item.Statistics.Created : lastMod;
@@ -225,39 +224,51 @@ namespace Sitecore.Modules.SitemapXML
 
             XmlNode locNode = doc.CreateElement("loc");
             urlNode.AppendChild(locNode);
-            locNode.AppendChild(doc.CreateTextNode(url));
+            locNode.AppendChild(doc.CreateTextNode(HttpUtility.HtmlEncode(url)));
+
+            //Add the alternate link for the default language (as per the notes on https://support.google.com/webmasters/answer/2620865?hl=en )
+            AddAlternateLink(doc, urlNode, defaultlang, url);
 
             foreach (Language itemLanguage in item.Languages)
             {
                 string lang = itemLanguage.ToString();
-                
-                //All languages desired
-                //Or default language
-                //Or in list of desired languages
-                if ((desiredLangs.Count < 1) || (lang.Equals(defaultlang, StringComparison.InvariantCultureIgnoreCase)) || desiredLangs.Contains(lang.ToLower()))
+
+                //If not the default language, and
+                    //All languages desired
+                    //Or in list of desired languages
+                if ((!lang.Equals(defaultlang, StringComparison.InvariantCultureIgnoreCase)) && ((desiredLangs.Count < 1) || desiredLangs.Contains(lang.ToLower()) ))
                 {
 
                     var langItem = item.Database.GetItem(item.ID, itemLanguage);
                     if (langItem.Versions.Count > 0)
                     {
                         string altUrl = GetItemUrl(langItem, site, LanguageEmbedding.Always, lang);
-
-                        XmlElement altLangNode = doc.CreateElement("xhtml", "link", "http://www.w3.org/1999/xhtml");
-                        altLangNode.SetAttribute("rel", "alternate");
-                        altLangNode.SetAttribute("hreflang", lang);
-                        altLangNode.SetAttribute("href", altUrl);
-                        urlNode.AppendChild(altLangNode);
+                        AddAlternateLink(doc, urlNode, lang, altUrl);
 
                         lastMod = (lastMod < item.Statistics.Updated) ? item.Statistics.Updated : lastMod;
                     }
                 }
             }
 
+            if( lastMod == DateTime.MinValue )
+            {
+                lastMod = DateTime.Now;
+            }
+
             XmlNode lastmodNode = doc.CreateElement("lastmod");
             urlNode.AppendChild(lastmodNode);
-            lastmodNode.AppendChild(doc.CreateTextNode(HtmlEncode(lastMod.ToString("yyyy-MM-ddTHH:mm:sszzz"))));
+            lastmodNode.AppendChild(doc.CreateTextNode(HttpUtility.HtmlEncode(lastMod.ToString("yyyy-MM-ddTHH:mm:sszzz"))));
 
             return doc;
+        }
+
+        private static void AddAlternateLink(XmlDocument doc, XmlNode urlNode, string lang, string altUrl)
+        {
+            XmlElement altLangNode = doc.CreateElement("xhtml", "link", "http://www.w3.org/1999/xhtml");
+            altLangNode.SetAttribute("rel", "alternate");
+            altLangNode.SetAttribute("hreflang", lang);
+            altLangNode.SetAttribute("href", HttpUtility.HtmlEncode(altUrl));
+            urlNode.AppendChild(altLangNode);
         }
 
         private string GetItemUrl(Item item, Site site, LanguageEmbedding langEmbed, string lang)
@@ -289,14 +300,6 @@ namespace Sitecore.Modules.SitemapXML
             }
             
             return url;
-
-        }
-
-        private static string HtmlEncode(string text)
-        {
-            string result = HttpUtility.HtmlEncode(text);
-
-            return result;
         }
 
         private void SubmitEngine(string engine, string sitemapUrl)
@@ -304,7 +307,7 @@ namespace Sitecore.Modules.SitemapXML
             //Check if it is not localhost because search engines returns an error
             if (!sitemapUrl.Contains("localhost"))
             {
-                string request = string.Concat(engine, HtmlEncode(sitemapUrl));
+                string request = string.Concat(engine, HttpUtility.HtmlEncode(sitemapUrl));
 
                 System.Net.HttpWebRequest httpRequest = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(request);
                 try

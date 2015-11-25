@@ -162,7 +162,7 @@ namespace Sitecore.Modules.SitemapXML
                     break;
                 }
             }
-
+            result.Sort();
             return result;
         }
     }
