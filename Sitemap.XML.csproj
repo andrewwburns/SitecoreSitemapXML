@@ -79,9 +79,17 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="sitecore modules\Shell\sitemap XML\SitemapManager.xml" />
+    <Content Include="utils\Template.txt" />
+    <Content Include="utils\VersionInjector.exe" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages\SiteMapXML Manual Package 1.5.5807.19967.zip" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -25,4 +25,4 @@ Manually Updating an installed Sitemap module
 	+ Update Live Search to use Bing. Change the Name, and set the URL to: http://www.bing.com/webmaster/ping.aspx?siteMap=
 -	Make sure that your Robots.txt file does not contain any relative paths to the sitemap.xml
 
-Publish some content and the Sitemap file (and Robots.txt) should update.
+Publish some content and the Sitemap file (and Robots.txt) should update. 
